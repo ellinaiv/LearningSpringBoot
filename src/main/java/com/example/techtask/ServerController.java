@@ -47,7 +47,7 @@ public class ServerController {
     }
 
     /**
-     * BONUS TASKS
+     * BONUS TASK
      **/
     @RequestMapping("/fetchPostsWhereMentioned")
     @ResponseBody
