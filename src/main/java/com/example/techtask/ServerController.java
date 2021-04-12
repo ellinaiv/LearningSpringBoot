@@ -36,7 +36,7 @@ public class ServerController {
         List<Document> filteredHits = filterByStory(searchWord, hitsJson.getBody(), parser);
 
         if(filteredHits.size() == 0){
-            return "No data for search word "+ searchWord +" found";
+            return "No hits for search word "+ searchWord +" found";
         }
 
         encapsulate(filteredHits, "b");
@@ -64,7 +64,7 @@ public class ServerController {
                 .collect(Collectors.toList());
 
         if(filteredHits.size() == 0){
-            return "No data for post "+ postId +" found";
+            return "Post with id = "+ postId +" is not found";
         }
 
         findWhereMentioned(posts, filteredHits.get(0).getAuthor(), hits.getDocuments());
