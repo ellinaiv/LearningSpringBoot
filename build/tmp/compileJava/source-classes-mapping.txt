@@ -1,5 +1,5 @@
-com/example/techtask/DataStructures/Document.java
- com.example.techtask.DataStructures.Document
+com/example/techtask/DataStructures/Author.java
+ com.example.techtask.DataStructures.Author
 com/example/techtask/DataStructures/Influence.java
  com.example.techtask.DataStructures.Influence
 com/example/techtask/DataStructures/Source.java
@@ -10,11 +10,11 @@ com/example/techtask/DataStructures/Attachment.java
  com.example.techtask.DataStructures.Attachment
 com/example/techtask/DataStructures/Mention.java
  com.example.techtask.DataStructures.Mention
-com/example/techtask/DataStructures/Hits.java
- com.example.techtask.DataStructures.Hits
-com/example/techtask/DataStructures/Author.java
- com.example.techtask.DataStructures.Author
 com/example/techtask/FilterApplication.java
  com.example.techtask.FilterApplication
+com/example/techtask/DataStructures/Document.java
+ com.example.techtask.DataStructures.Document
+com/example/techtask/DataStructures/Hits.java
+ com.example.techtask.DataStructures.Hits
 com/example/techtask/ServerController.java
  com.example.techtask.ServerController

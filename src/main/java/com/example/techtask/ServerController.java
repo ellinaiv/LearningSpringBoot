@@ -19,74 +19,107 @@ import java.util.stream.Stream;
 @RestController
 public class ServerController {
 
+    String url = "https://www.retriever-info.com/doccyexample/documents.json";
+    RestTemplate restTemplate = new RestTemplate();
+    Gson parser = new Gson();
+
+
+    /**
+     * TASKS 1-4
+     **/
     @RequestMapping("/filterBySearchWord")
     @ResponseBody
-    public String response(@RequestParam String word) {
+    public String filterBySearchWord(@RequestParam String searchWord) {
 
-        String url = "https://www.retriever-info.com/doccyexample/documents.json";
-        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> hitsJson = fetchData(url, restTemplate);
 
-        ResponseEntity<String> response = fetchData(url, restTemplate);
-        String jsonResult = filterByStory(word, response.getBody());
+        List<Document> filteredHits = filterByStory(searchWord, hitsJson.getBody(), parser);
 
-        return jsonResult;
+        if(filteredHits.size() == 0){
+            return "No data for search word "+ searchWord +" found";
+        }
+
+        encapsulate(filteredHits, "b");
+
+        HashMap<String, Object> response = packResponseStories(searchWord, filteredHits);
+
+        return parser.toJson(response);
     }
 
+    /**
+     * BONUS TASKS
+     **/
+    @RequestMapping("/fetchPostsWhereMentioned")
+    @ResponseBody
+    public String fetchPostsWhereMentioned(@RequestParam String postId) {
+
+        ResponseEntity<String> hitsJson = fetchData(url, restTemplate);
+
+        Hits hits = parser.fromJson(hitsJson.getBody(), Hits.class);
+
+        ArrayList<Document> posts = new ArrayList<Document>();
+
+        List<Document> filteredHits = Arrays.stream(hits.getDocuments())
+                .filter(doc -> doc.compareId(postId))
+                .collect(Collectors.toList());
+
+        if(filteredHits.size() == 0){
+            return "No data for post "+ postId +" found";
+        }
+
+        findWhereMentioned(posts, filteredHits.get(0).getAuthor(), hits.getDocuments());
+
+        HashMap<String, Object> response = packResponseAuthorsMentioned(postId, posts);
+
+        return parser.toJson(response);
+    }
+
+    /**Help functions**/
+    public HashMap<String, Object> packResponseAuthorsMentioned(String postId, ArrayList<Document> posts){
+
+        HashMap<String, Object> response = new HashMap<String, Object>();
+        response.put("startingPointId", postId);
+        response.put("posts", posts);
+
+        return response;
+    }
 
     public ResponseEntity<String> fetchData(String url, RestTemplate restTemplate) {
         return restTemplate.getForEntity(url, String.class);
     }
 
 
-    public String filterByStory(String word, String response) {
+    public List<Document> filterByStory(String word, String response, Gson parser) {
 
-        Gson parser = new Gson();
         Hits hits = parser.fromJson(response, Hits.class);
 
         Stream<Document> documents = Arrays.stream(hits.getDocuments());
-        List<Document> filteredDocs = documents.filter(doc -> doc.contains(word)).collect(Collectors.toList());
-        filteredDocs.forEach(doc -> doc.encapsulate("b"));
+        List<Document> filteredHits = documents.filter(doc -> doc.contains(word)).collect(Collectors.toList());
 
-        HashMap<String, Object> responseJson = new HashMap<String, Object>();
-
-        responseJson.put("filteredBy ", word);
-        responseJson.put("hitsNr", filteredDocs.size());
-        responseJson.put("hits", filteredDocs);
-
-
-        return parser.toJson(responseJson);
+        return filteredHits;
     }
 
+    public void encapsulate(List<Document> hits, String tag) {
+        hits.forEach(hit -> hit.encapsulate(tag));
+    }
 
-    @RequestMapping("/findMentioned")
-    @ResponseBody
-    public String fetchPostIfAuthorMentioned(@RequestParam String postId) {
+    public HashMap<String, Object> packResponseStories(String word, List<Document> hits) {
 
-        String url = "https://www.retriever-info.com/doccyexample/documents.json";
-        RestTemplate restTemplate = new RestTemplate();
+        HashMap<String, Object> response = new HashMap<String, Object>();
 
-        ResponseEntity<String> response = fetchData(url, restTemplate);
+        response.put("filteredBy ", word);
+        response.put("hitsNr", hits.size());
+        response.put("hits", hits);
 
-        Gson parser = new Gson();
-        Hits hits = parser.fromJson(response.getBody(), Hits.class);
+        return response;
 
-        ArrayList<Document> posts = new ArrayList<Document>();
-
-        Document[] documents = hits.getDocuments();
-        List<Document> filteredDocs = Arrays.stream(documents).filter(doc -> doc.compareId(postId)).collect(Collectors.toList());
-
-        findWhereMentioned(posts, filteredDocs.get(0).getAuthor(), documents);
-
-        HashMap<String, Object> responseJson = new HashMap<String, Object>();
-        responseJson.put("startingPointId", postId);
-        responseJson.put("posts", posts);
-
-        return parser.toJson(responseJson);
     }
 
     public void findWhereMentioned(ArrayList<Document> posts, Author author, Document[] documents) {
 
-        List<Document> postsWhereMentioned = Arrays.stream(documents).filter(doc -> doc.isMentioned(author.getId())).collect(Collectors.toList());
+        List<Document> postsWhereMentioned = Arrays.stream(documents)
+                .filter(doc -> doc.isMentioned(author.getId()))
+                .collect(Collectors.toList());
 
         if (postsWhereMentioned.size() == 0) {
             return;
@@ -95,5 +128,6 @@ public class ServerController {
         postsWhereMentioned.stream().forEach(post -> posts.add(post));
         postsWhereMentioned.stream().forEach(post -> findWhereMentioned(posts, post.getAuthor(), documents));
     }
+
 
 }

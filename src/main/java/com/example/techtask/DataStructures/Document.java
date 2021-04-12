@@ -61,7 +61,6 @@ public class Document {
         return id.equals(idToCompare);
     }
 
-
     public boolean isMentioned(String id) {
         if(mentioned == null){
             return false;
