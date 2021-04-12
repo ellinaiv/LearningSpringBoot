@@ -1,0 +1,2 @@
+com/example/techtask/TechtaskApplicationTests.java
+ com.example.techtask.FilterApplicationTests
