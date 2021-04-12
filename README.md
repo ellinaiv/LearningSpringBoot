@@ -17,6 +17,7 @@ The application is supposed to get data from a JSON file to so filter the respon
 * [Spring Boot](https://spring.io/projects/spring-boot)
 * [RestTemplate](https://www.baeldung.com/rest-template)
 * [Gson](https://github.com/google/gson)
+* [Lombok](https://projectlombok.org/)
 
 
 ### Set up
