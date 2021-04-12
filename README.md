@@ -6,7 +6,7 @@ The application is supposed to get data from a JSON file to so filter the respon
 - [x] Simple Spring Boot Server Application Template
 - [x] Fetching data from JSON with RestTemplate
 - [x] Filtering posts by a search word sent in as a param
-- [x] Encapsulation of hit-story with "<b>story</b>"
+- [x] Encapsulation of hit-story with "<tag>story</tag>"
 - [x] Present response as JSON-object
 - [x] Find post by ID
 - [X] Find where its author is mentioned and recursively find where respective authors are mentioned 
