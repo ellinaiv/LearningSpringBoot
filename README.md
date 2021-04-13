@@ -1,5 +1,4 @@
 # Filter-Application written with Spring Boot  </br>
-The application is a solution for a technical interview task. </br>
 The application is supposed to get data from a JSON file to so filter the response due to different needs. </br>
 
 **Implementation steps:**
