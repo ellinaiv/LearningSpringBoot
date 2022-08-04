@@ -1,5 +1,5 @@
 # Filter-Application written with Spring Boot  </br>
-The application is supposed to get data JSON to so filter the response due to different needs. </br>
+The application is supposed to get data in form of JSON to so filter the response due to different needs. </br>
 
 **Implementation steps:**
 - [x] Simple Spring Boot Server Application Template
